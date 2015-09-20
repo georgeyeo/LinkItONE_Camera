@@ -1,15 +1,21 @@
 // LIOC.ino (LinkIt ONE Camera)
 
 /*
+	The circuit:
+	 * SD card attached to SPI bus as follows:
+	 ** MOSI - pin 11
+	 ** MISO - pin 12
+	 ** CLK - pin 13
+	 ** CS - pin 4
 
-
-	modified 19 September 2015
+	modified 20 September 2015
 	by George Yeo
 
 	Examples:
 	
-	Android - SD - CardInfo
-	Android - SD - listfiles
+	Arduino - SD - CardInfo
+	Arduino - SD - listfiles
+	Arduino - SD - Files
 
 
   */
@@ -26,7 +32,9 @@ Sd2Card card;
 SdVolume volume;
 SdFile root;
 
-File root;
+File fileRoot;
+File fileMyFile;
+
 
 // change this to match your SD shield or module;
 // Arduino Ethernet shield: pin 4
@@ -58,16 +66,17 @@ void setup() {
 
 	// we'll use the initialization code from the utility libraries
 	// since we're just testing if the card is working!
-	if (!card.init(SPI_HALF_SPEED, chipSelect)) {
+	if (!card.init(SPI_HALF_SPEED, chipSelect))
+	{
 		Serial.println("initialization failed. Things to check:");
 		Serial.println("* is a card is inserted?");
 		Serial.println("* Is your wiring correct?");
 		Serial.println("* did you change the chipSelect pin to match your shield or module?");
 		return;
-	} else {
-		Serial.println("Wiring is correct and a card is present.");
 	}
-
+	
+	Serial.println("Wiring is correct and a card is present.");
+	
 	// print the type of card
 	Serial.print("\nCard type: ");
 	
@@ -117,6 +126,47 @@ void setup() {
 
 	// list all files in the card with date and size
 	root.ls(LS_R | LS_DATE | LS_SIZE);
+	
+	
+	// List files
+	fileRoot = SD.open("/");
+
+	printDirectory(fileRoot, 0);
+
+	Serial.println("List files done!");
+	
+	
+	// Files
+	if (SD.exists("example.txt")) {
+		Serial.println("example.txt exists.");
+	}
+	else {
+		Serial.println("example.txt doesn't exist.");
+	}
+
+	// open a new file and immediately close it:
+	Serial.println("Creating example.txt...");
+	myFile = SD.open("example.txt", FILE_WRITE);
+	myFile.close();
+
+	// Check to see if the file exists:
+	if (SD.exists("example.txt")) {
+		Serial.println("example.txt exists.");
+	}
+	else {
+		Serial.println("example.txt doesn't exist.");
+	}
+
+	// delete the file:
+	Serial.println("Removing example.txt...");
+	SD.remove("example.txt");
+
+	if (SD.exists("example.txt")) {
+		Serial.println("example.txt exists.");
+	}
+	else {
+		Serial.println("example.txt doesn't exist.");
+	}
 }
 
 // the loop function runs over and over again forever
