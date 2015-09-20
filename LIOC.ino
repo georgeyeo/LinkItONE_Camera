@@ -66,7 +66,8 @@ void setup() {
 
 	// we'll use the initialization code from the utility libraries
 	// since we're just testing if the card is working!
-	if (!card.init(SPI_HALF_SPEED, chipSelect))
+	if (!card.init(SPI_HALF_SPEED, chipSelect
+	//if (!SD.begin(4))
 	{
 		Serial.println("initialization failed. Things to check:");
 		Serial.println("* is a card is inserted?");
@@ -146,8 +147,8 @@ void setup() {
 
 	// open a new file and immediately close it:
 	Serial.println("Creating example.txt...");
-	myFile = SD.open("example.txt", FILE_WRITE);
-	myFile.close();
+	fileMyFile = SD.open("example.txt", FILE_WRITE);
+	fileMyFile.close();
 
 	// Check to see if the file exists:
 	if (SD.exists("example.txt")) {
