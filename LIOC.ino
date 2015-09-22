@@ -6,9 +6,9 @@
 	 ** MOSI - pin 11
 	 ** MISO - pin 12
 	 ** CLK - pin 13
-	 ** CS - pin 4
+	 ** CHIP_SELECT - pin 4
 
-	modified 20 September 2015
+	modified 23 September 2015
 	by George Yeo
 
 	Examples:
@@ -16,6 +16,7 @@
 	Arduino - SD - CardInfo
 	Arduino - SD - listfiles
 	Arduino - SD - Files
+	Arduino - SD - 
 
 
   */
@@ -40,7 +41,7 @@ File fileMyFile;
 // Arduino Ethernet shield: pin 4
 // Adafruit SD shields and modules: pin 10
 // Sparkfun SD shield: pin 8
-const int chipSelect = 4;
+const int CHIP_SELECT = 4;
 
 
 // the setup function runs once when you press reset or power the board
@@ -66,8 +67,8 @@ void setup() {
 
 	// we'll use the initialization code from the utility libraries
 	// since we're just testing if the card is working!
-	if (!card.init(SPI_HALF_SPEED, chipSelect
-	//if (!SD.begin(4))
+	//if (!card.init(SPI_HALF_SPEED, CHIP_SELECT))
+	if (!SD.begin(CHIP_SELECT))
 	{
 		Serial.println("initialization failed. Things to check:");
 		Serial.println("* is a card is inserted?");
@@ -135,18 +136,11 @@ void setup() {
 	printDirectory(fileRoot, 0);
 
 	Serial.println("List files done!");
-	
-	
-	// Files
-	if (SD.exists("example.txt")) {
-		Serial.println("example.txt exists.");
-	}
-	else {
-		Serial.println("example.txt doesn't exist.");
-	}
 
-	// open a new file and immediately close it:
+
+	// Open a new file and immediately close it:
 	Serial.println("Creating example.txt...");
+	
 	fileMyFile = SD.open("example.txt", FILE_WRITE);
 	fileMyFile.close();
 
@@ -158,7 +152,8 @@ void setup() {
 		Serial.println("example.txt doesn't exist.");
 	}
 
-	// delete the file:
+	
+	// Delete the file:
 	Serial.println("Removing example.txt...");
 	SD.remove("example.txt");
 
