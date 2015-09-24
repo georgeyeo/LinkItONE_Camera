@@ -8,7 +8,7 @@
 	 ** CLK - pin 13
 	 ** CHIP_SELECT - pin 4
 
-	modified 23 September 2015
+	modified 25 September 2015
 	by George Yeo
 
 	Examples:
@@ -16,7 +16,7 @@
 	Arduino - SD - CardInfo
 	Arduino - SD - listfiles
 	Arduino - SD - Files
-	Arduino - SD - 
+	Arduino - SD - ReadWrite
 
 
   */
@@ -35,6 +35,7 @@ SdFile root;
 
 File fileRoot;
 File fileMyFile;
+File fileMyFile1;
 
 
 // change this to match your SD shield or module;
@@ -151,8 +152,8 @@ void setup() {
 	else {
 		Serial.println("example.txt doesn't exist.");
 	}
-
 	
+		
 	// Delete the file:
 	Serial.println("Removing example.txt...");
 	SD.remove("example.txt");
@@ -162,6 +163,39 @@ void setup() {
 	}
 	else {
 		Serial.println("example.txt doesn't exist.");
+	}
+	
+	
+	fileMyFile1 = SD.open("test.txt", FILE_WRITE);
+
+	// if the file opened okay, write to it:
+	if (fileMyFile1) {
+		Serial.print("Writing to test.txt...");
+		fileMyFile1.println("testing 1, 2, 3.");
+		// close the file:
+		fileMyFile1.close();
+		Serial.println("done.");
+	} else {
+		// if the file didn't open, print an error:
+		Serial.println("error opening test.txt");
+	}
+	
+	// re-open the file for reading:
+	fileMyFile1 = SD.open("test.txt");
+	
+	if (fileMyFile1) {
+		Serial.println("test.txt:");
+
+		// read from the file until there's nothing else in it:
+		while (fileMyFile1.available()) {
+			Serial.write(fileMyFile1.read());
+		}
+		
+		// close the file:
+		fileMyFile1.close();
+	} else {
+		// if the file didn't open, print an error:
+		Serial.println("error opening test.txt");
 	}
 }
 
