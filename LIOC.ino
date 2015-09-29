@@ -23,7 +23,7 @@
 	 ** CLK - pin 13
 	 ** CHIP_SELECT - pin 4
 
-	modified 29 September 2015
+	modified 30 September 2015
 	by George Yeo
 
 	Examples:
@@ -48,6 +48,8 @@
 
 #define Drv LFlash          // use Internal 10M Flash
 // #define Drv LSD           // use SD card
+
+#define EXAMPLE_FILE_NAME "example.txt"
 
 
 LFile fileMyFile;
@@ -90,7 +92,7 @@ void setup() {
 	
 	Serial.println("initialization done.");
 	
-	if (Drv.exists("example.txt")) {
+	if (Drv.exists(EXAMPLE_FILE_NAME)) {
         Serial.println("example.txt exists.");
     }
     else {
@@ -99,11 +101,11 @@ void setup() {
 
     // open a new file and immediately close it:
     Serial.println("Creating example.txt...");
-    fileMyFile = Drv.open("example.txt", FILE_WRITE);
+    fileMyFile = Drv.open(EXAMPLE_FILE_NAME, FILE_WRITE);
     fileMyFile.close();
 
     // Check to see if the file exists:
-    if (Drv.exists("example.txt")) {
+    if (Drv.exists(EXAMPLE_FILE_NAME)) {
         Serial.println("example.txt exists.");
     }
     else {
@@ -112,9 +114,9 @@ void setup() {
 
     // delete the file:
     Serial.println("Removing example.txt...");
-    Drv.remove("example.txt");
+    Drv.remove(EXAMPLE_FILE_NAME);
 
-    if (Drv.exists("example.txt")) {
+    if (Drv.exists(EXAMPLE_FILE_NAME)) {
         Serial.println("example.txt exists.");
     }
     else {
