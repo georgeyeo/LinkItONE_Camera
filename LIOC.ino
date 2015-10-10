@@ -31,7 +31,7 @@
 	Arduino - SD - CardInfo
 	Arduino - hardware - arduino - mtk - libraries - LStorage - examples - listfiles
 	Arduino - hardware - arduino - mtk - libraries - LStorage - examples - Files
-	Arduino - SD - ReadWrite
+	Arduino - hardware - arduino - mtk - libraries - LStorage - examples - ReadWrite
 
 
 */
@@ -113,8 +113,26 @@ void setup()
 
     // open a new file and immediately close it:
     Serial.println("Creating example.txt...");
+	
+	// open the file. note that only one file can be open at a time,
+    // so you have to close this one before opening another.
     fileMyFile = Drv.open(szExampleFile, FILE_WRITE);
-    fileMyFile.close();
+    
+	if(fileMyFile)
+	{
+		fileMyFile.seek(0);
+        // read from the file until there's nothing else in it:
+        while (fileMyFile.available()) {            
+            Serial.write(fileMyFile.read());
+        }
+		
+		Serial.print("Writing ...");
+        fileMyFile.println("testing 1, 2, 3.");
+		
+		fileMyFile.close();
+	}
+	else
+		Serial.println("Failed in opening file");
 
     // Check to see if the file exists:
     if (Drv.exists(szExampleFile)) {
