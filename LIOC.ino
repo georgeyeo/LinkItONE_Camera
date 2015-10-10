@@ -23,13 +23,13 @@
 	 ** CLK - pin 13
 	 ** CHIP_SELECT - pin 4
 
-	modified 30 September 2015
+	modified 10 October 2015
 	by George Yeo
 
 	Examples:
 	
 	Arduino - SD - CardInfo
-	Arduino - SD - listfiles
+	Arduino - hardware - arduino - mtk - libraries - LStorage - examples - listfiles
 	Arduino - hardware - arduino - mtk - libraries - LStorage - examples - Files
 	Arduino - SD - ReadWrite
 
@@ -49,9 +49,8 @@
 #define Drv LFlash          // use Internal 10M Flash
 // #define Drv LSD           // use SD card
 
-#define EXAMPLE_FILE_NAME "example.txt"
 
-
+LFile fileRoot;
 LFile fileMyFile;
 
 
@@ -63,7 +62,12 @@ LFile fileMyFile;
 
 
 // the setup function runs once when you press reset or power the board
-void setup() {
+void setup()
+{
+	char	szExampleFile[255] = {0x00};
+	
+	strcpy(szExampleFile, "example.txt");
+	
 	// initialize digital pin 13 as an output.
 	//pinMode(13, OUTPUT);
 
@@ -92,7 +96,15 @@ void setup() {
 	
 	Serial.println("initialization done.");
 	
-	if (Drv.exists(EXAMPLE_FILE_NAME)) {
+	
+	fileRoot = Drv.open("/");
+
+    printDirectory(fileRoot, 0);
+
+    Serial.println("done!");
+	
+	
+	if (Drv.exists(szExampleFile)) {
         Serial.println("example.txt exists.");
     }
     else {
@@ -101,11 +113,11 @@ void setup() {
 
     // open a new file and immediately close it:
     Serial.println("Creating example.txt...");
-    fileMyFile = Drv.open(EXAMPLE_FILE_NAME, FILE_WRITE);
+    fileMyFile = Drv.open(szExampleFile, FILE_WRITE);
     fileMyFile.close();
 
     // Check to see if the file exists:
-    if (Drv.exists(EXAMPLE_FILE_NAME)) {
+    if (Drv.exists(szExampleFile)) {
         Serial.println("example.txt exists.");
     }
     else {
@@ -114,9 +126,9 @@ void setup() {
 
     // delete the file:
     Serial.println("Removing example.txt...");
-    Drv.remove(EXAMPLE_FILE_NAME);
+    Drv.remove(szExampleFile);
 
-    if (Drv.exists(EXAMPLE_FILE_NAME)) {
+    if (Drv.exists(szExampleFile)) {
         Serial.println("example.txt exists.");
     }
     else {
@@ -125,7 +137,8 @@ void setup() {
 }
 
 // main of arduino
-void loop() {
+void loop()
+{
 	/*
 	digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
 	delay(1000);              // wait for a second
@@ -133,3 +146,34 @@ void loop() {
 	delay(1000);              // wait for a second
 	*/
 }
+
+void printDirectory(LFile dir, int numTabs)
+{
+    while(true)
+	{
+		LFile entry =  dir.openNextFile();
+		
+        if (! entry) {
+            // no more files
+            break;
+        }
+		
+        for (uint8_t i=0; i<numTabs; i++) {
+            Serial.print('\t');
+        }
+		
+        Serial.print(entry.name());
+		
+        if (entry.isDirectory()) {
+            Serial.println("/");
+            printDirectory(entry, numTabs+1);
+        } else {
+            // files have sizes, directories do not
+            Serial.print("\t\t");
+            Serial.println(entry.size(), DEC);
+        }
+		
+        entry.close();
+    }
+}
+
