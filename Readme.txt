@@ -17,3 +17,8 @@ Notice
 2.Open Device Manager and disable this device "Alcatel Single RNDIS Interface". Restart the computer.
 
 3.Don't forget to select Board "LinkIt ONE" and Port "modem port".
+
+
+Note
+
+The board is changed to LinkIt Smart 7688 on October 21, 2015.
